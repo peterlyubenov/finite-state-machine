@@ -1,12 +1,5 @@
 const _ = require('underscore');
-
-
-const states = [
-    new State("z0"),
-    new State("z1"),
-    new State("z2", true),
-    new State("error", true)
-];
+const verbose = false;
 
 class StateMachine {
     constructor() {
@@ -43,15 +36,20 @@ class StateMachine {
             let newState = state.run(cargo);
 
             // Get the new cargo
-            cargo = newState.cargo;
+            cargo = state.cargo;
 
             if(this.endStates.includes(newState)) {
                 if(cargo.length === 0) {
-                    console.log("Reached", _.invert(states)[newState]);
+                    if(verbose) {
+                        console.log("Reached", newState.name);
+                    }
+
+                    console.log(newState.valid)
+
                     break;
                 }
             }
-            handler = this.handlers[newState];
+            state = newState;
         }
     }
 }
@@ -59,7 +57,7 @@ class StateMachine {
 class State {
     constructor(name, endState = 0) {
         this.name = name;
-        this.endState = endState;
+        this.isEnd = endState;
     }
 
     // Set the evaluation function for the state
@@ -70,7 +68,10 @@ class State {
 
     callback() {
         // Print to the console the current letter, state and new state
-        console.log("Letter:", this.letter, "State:", this.name , "New State:", this.newState);
+
+        if(verbose) {
+            console.log("Letter:", this.letter, "State:", this.name , "New State:", this.newState.name);
+        }
     }
 
     prepare() {
@@ -93,9 +94,17 @@ class State {
         this.callback();
 
         // Return the new state and new cargo
-        return { newState: this.newState, cargo: this.cargo };
+        return this.newState;
     }
 }
+
+const states = [
+    new State("z0"),
+    new State("z1"),
+    new State("z2", true),
+    new State("error", true)
+];
+
 
 states[0].setEval((letter, cargo) => {
     // If 1 => keep same state
@@ -121,5 +130,16 @@ states[2].setEval(letter => {
     return states[3];
 })
 
+states[2].valid = true; //If ending at state 2 = valid word
+states[3].valid = false //If ending at state 3 (error) = invalid word
+
 const machine = new StateMachine();
+
+// Add all states
+for(let state of states) {
+    machine.addState(state);
+}
+// Set the start state
 machine.setStart(states[0]);
+
+machine.run("01010");
