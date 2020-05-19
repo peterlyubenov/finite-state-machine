@@ -1,0 +1,22 @@
+.el-button {
+   margin: 1em 0;    
+}
+
+.is-valid {
+    font-size: 1.3em !important;
+    &__valid {
+        color: rgb(67, 182, 82);
+    }
+    
+    &__invalid {
+        color: rgb(250, 86, 86);
+    }
+}
+
+.step-data {
+    color: rgb(240, 241, 155);
+}
+.small {
+    font-size: 0.6rem !important;
+    display: inline-block;
+}
