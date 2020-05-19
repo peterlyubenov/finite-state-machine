@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bulma": "^0.8.2",
+    "express": "^4.17.1",
     "underscore": "^1.10.2"
   }
 }
